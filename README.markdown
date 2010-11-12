@@ -5,6 +5,13 @@ findable_by is a simple Rails 3 plugin to improve a way how you search for recor
 
 See below how it's works.
 
+Install:
+-
+
+In your Gemfile:
+
+    gem "findable_by"
+
 Usage
 -
 
