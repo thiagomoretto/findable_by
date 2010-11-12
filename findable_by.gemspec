@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{findable_by}
-  s.version = "0.1.0.beta"
+  s.version = "0.1.0"
 
-  s.required_rubygems_version = Gem::Requirement.new("> 1.3.1") if s.respond_to? :required_rubygems_version=
+  s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Thiago Moretto"]
-  s.date = %q{2010-11-11}
+  s.date = %q{2010-11-12}
   s.description = %q{Even easier to find records!}
   s.email = %q{thiago@moretto.eng.br}
   s.extra_rdoc_files = [
@@ -18,6 +18,7 @@ Gem::Specification.new do |s|
   s.files = [
     "init.rb",
      "lib/findable_by.rb",
+     "lib/findable_by/finders/between_finder.rb",
      "lib/findable_by/finders/equals_finder.rb",
      "lib/findable_by/finders/like_finder.rb",
      "lib/findable_by/finders/proc_finder.rb",
