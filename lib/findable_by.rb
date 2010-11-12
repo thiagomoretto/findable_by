@@ -4,12 +4,35 @@ module FindableBy
       relation = self.dup
       params.each do |attribute, value|
         finder = self._finders[attribute]
-        if not value.blank? and not finder.blank?
-          relation = finder.send(:build_condition, relation, attribute, value, params) 
+
+        if not finder.blank?
+          if not finder.options[:with].blank?
+            # value is replaced in this case.
+            value = _fb_override_value(attribute, finder.options[:with], params)
+          end
+          
+          if _fb_is_value_ok(value) 
+            relation = finder.send(:build_condition, relation, attribute, value, params) 
+          end
         end
       end if not params.blank?
       
       relation
+    end
+  
+  private
+    def _fb_is_value_ok(value)
+      not value.blank? or (value.is_a?(Hash) and value.all?)
+    end
+  
+    def _fb_override_value(attribute, with_opts, params)
+      case with_opts
+      when Symbol
+        raise NotImplementedError
+      when Array
+        value = with_opts.collect{ |wp| params[attribute][wp] }
+      end
+      value
     end
   end
   
@@ -30,12 +53,13 @@ module FindableBy
             options[:attributes].each do |attribute|
               # attribute = options[:as] if options.key?(:as)
               using_what = options[:using]
+              
               if using_what.is_a?(Class)
-                self._finders[attribute] = using_what
+                self._finders[attribute] = using_what.new(options)
               elsif using_what.is_a?(Proc)
-                self._finders[attribute] = ProcFinder.new(using_what)
+                self._finders[attribute] = ProcFinder.new(options, using_what)
               else
-                self._finders[attribute] = Kernel.const_get("#{options[:using]}_finder".classify)
+                self._finders[attribute] = Kernel.const_get("#{options[:using]}_finder".classify).new(options)
               end
             end
           end
@@ -51,7 +75,12 @@ module FindableBy
 end
 
 class Finder
-  def build_condition(relation, attribute, value)
+  attr_accessor :options
+  def initialize(options)
+    self.options = options
+  end
+  
+  def build_condition(relation, attribute, value, params)
     raise NotImplementedError
   end
 end

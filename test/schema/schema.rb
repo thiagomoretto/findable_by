@@ -6,6 +6,7 @@ ActiveRecord::Schema.define do
     t.references :primary_contact
     t.string     :gender, :limit => 1
     t.references :number1_fan
+    t.integer    :age, :limit => 3
     t.integer    :lock_version, :null => false, :default => 0
   end  
   

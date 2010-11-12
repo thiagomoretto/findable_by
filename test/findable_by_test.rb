@@ -39,7 +39,20 @@ class FindableByTest < ActiveRecord::TestCase
       assert person.find_with(:last_name => "omg").to_sql =~ /OMG/
     end
   end
+  
+  test "should generate a SQL to find people by age range" do
+    with_scoped(Person) do |person|
+      assert person.find_with(:age => { :min => 20, :max => 45 }).to_sql =~ /BETWEEN 20 AND 45/
+    end
+  end
 
+  test "should generate a SQL to find people by birth date range" do
+    with_scoped(Person) do |person|
+      params, params[:birth_date] = {}, {}
+      params[:birth_date][:min], params[:birth_date][:max] = Time.now - 1.day, Time.now + 1.day
+      assert person.find_with(params).to_sql =~ /BETWEEN/
+    end
+  end
 private
   def with_scoped(model, &block)
     block.call(model.send(:scoped))

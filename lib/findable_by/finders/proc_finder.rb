@@ -1,6 +1,7 @@
 class ProcFinder < Finder
   attr_accessor :proc
-  def initialize(proc)
+  def initialize(options, proc)
+    super(options)
     self.proc = proc
   end
   
