@@ -23,6 +23,8 @@ Usage
       findable_by :primary_contact_id,  :using => :equals
       findable_by :number1_fan,         :using => proc { |attribute, value| where("1=1") }
       findable_by :gender,              :using => proc { |attribute, value| gender(value) }
+      findable_by :age,                 :using => :between, :with => [ :min, :max ]
+      findable_by :birth_date,          :using => :between, :with => [ :min, :max ]
     end
     
 And now you can search:
