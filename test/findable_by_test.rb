@@ -18,7 +18,8 @@ class FindableByTest < ActiveRecord::TestCase
 
   test "should generate a SQL to find a person using a proc calling a scope" do
     with_scoped(Person) do |person|
-      assert_not_nil person.find_with(:first_name => "OMG!", :gender => 'M').to_sql
+      sql = person.find_with("first_name" => "OMG!", :gender => 'M').to_sql
+      assert_not_nil sql =~ /first_name/ and sql =~ /gender/
     end
   end
   

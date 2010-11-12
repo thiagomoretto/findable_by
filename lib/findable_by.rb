@@ -41,7 +41,7 @@ module FindableBy
     
     included do 
       class_attribute :_finders
-      self._finders = Hash.new{ |h,k| h[k] = [] }
+      self._finders = HashWithIndifferentAccess.new{ |h,k| h[k] = [] }
     end
         
     private
@@ -49,18 +49,16 @@ module FindableBy
         def findable_by(*attr_names)
           options = attr_names.extract_options!
           options.merge!(:attributes => attr_names.flatten)
-          if options.key?(:using)
-            options[:attributes].each do |attribute|
-              # attribute = options[:as] if options.key?(:as)
-              using_what = options[:using]
-              
-              if using_what.is_a?(Class)
-                self._finders[attribute] = using_what.new(options)
-              elsif using_what.is_a?(Proc)
-                self._finders[attribute] = ProcFinder.new(options, using_what)
-              else
-                self._finders[attribute] = Kernel.const_get("#{options[:using]}_finder".classify).new(options)
-              end
+          options[:using] = :equals if not options.key?(:using)
+          options[:attributes].each do |attribute|
+            using_what = options[:using]
+            
+            if using_what.is_a?(Class)
+              self._finders[attribute] = using_what.new(options)
+            elsif using_what.is_a?(Proc)
+              self._finders[attribute] = ProcFinder.new(options, using_what)
+            else
+              self._finders[attribute] = Kernel.const_get("#{options[:using]}_finder".classify).new(options)
             end
           end
         end
