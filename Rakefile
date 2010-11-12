@@ -28,8 +28,8 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |s|
     s.name        = "findable_by"
-    s.version     = SimpleForm::VERSION.dup
-    s.summary     = "Improving a way how you to find records!"
+    s.version     = FindableBy::VERSION.dup
+    s.summary     = "Improving a way how you find records!"
     s.email       = "thiago@moretto.eng.br"
     s.homepage    = "http://github.com/thiagomoretto/findable_by"
     s.description = "Even easier to find records!"
