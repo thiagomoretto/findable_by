@@ -44,6 +44,11 @@ And now you can search:
                                                    #              :age => { :min => 25, :max => 45 } }
 
     relation.where(:gender => 'M').limit(1).all
+    # Will generate... (sqlite3)
+    # SELECT "people".* FROM "people" WHERE 
+    #           (people.age BETWEEN 25 AND 45) 
+    #       AND (UPPER(people.first_name) LIKE '%' ||    UPPER('Jose') || '%') 
+    #       AND ("people"."last_name" = 'LITO') AND ("people"."gender" = 'M') LIMIT 1
   
 You can create your own finders. Just create a class in your lib/ that extends Finder and respond_to "build_condition". Example, if you need to create a finder that upcase the value before creation the condition, you finder looks like this:
 
