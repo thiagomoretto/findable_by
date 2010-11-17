@@ -3,7 +3,7 @@ findable_by
 
 findable_by is a simple Rails 3 plugin to improve a way how you search for records. You can pass the search form parameters directly to the find_with method in your relation, by example. The plugin will take care to build a correct query in a safer way. This plugin doesn't modify the default behaviour of query engine of Rails3, but gives a new way to do your queries. You can use the both ways at same time without problems.
 
-This plugin is designed to improve a way how to find records when you have a search forms and in a standardized, cleaner and a safe way to link the form with to a form how to search or how to build a query to find the records based on parameters.
+This plugin is designed to improve a way how to find records when you have a search forms, and in a standardized, cleaner and safer way to link the parameters from search form to model that declares how to search them.
 
 See below how it's works.
 

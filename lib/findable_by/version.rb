@@ -1,3 +1,3 @@
 module FindableBy
-  VERSION = "0.1.1.beta".freeze
+  VERSION = "0.1.1".freeze
 end
