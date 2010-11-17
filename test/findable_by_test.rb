@@ -6,13 +6,13 @@ class FindableByTest < ActiveRecord::TestCase
 
   test "should generate a SQL to find a person by first name using like" do
     with_scoped(Person) do |person|
-      assert_not_nil person.find_with(:first_name => "OMG!").to_sql
+      assert_not_nil person.find_with(:first_name => "OMG!").to_sql =~ /LIKE/
     end
   end
   
   test "should generate a SQL to find a person using a proc" do
     with_scoped(Person) do |person|
-      assert_not_nil person.find_with(:number1_fan => "Don't care").to_sql
+      assert_not_nil person.find_with(:number1_fan => "Don't care").to_sql =~ /1=1/
     end
   end
 
@@ -25,13 +25,13 @@ class FindableByTest < ActiveRecord::TestCase
   
   test "should generate a SQL to find a person calling 'find_with' chained" do
     with_scoped(Person) do |person|
-      assert_not_nil person.find_with(:first_name => "OMG!").find_with(:gender => 'F').to_sql
+      assert_not_nil person.find_with(:first_name => "OMG!").find_with(:gender => 'F').to_sql =~ /first_name/
     end
   end
   
   test "should generate a SQL to find a person by primary_contact_id using equals" do
     with_scoped(Person) do |person|
-      assert_not_nil person.find_with(:primary_contact_id => 1).to_sql
+      assert_not_nil person.find_with(:primary_contact_id => 1).to_sql =~ /primary_contact_id/
     end
   end
   
@@ -54,9 +54,15 @@ class FindableByTest < ActiveRecord::TestCase
       assert person.find_with(params).to_sql =~ /BETWEEN/
     end
   end
+  
+  test "should generate a SQL to find people by department name using like" do
+    with_scoped(Person) do |person|
+      assert_not_nil person.find_with(:department_name => "hr").to_sql =~ /"department"."name" = 'hr'/
+    end
+  end
+  
 private
   def with_scoped(model, &block)
     block.call(model.send(:scoped))
   end
-  
 end

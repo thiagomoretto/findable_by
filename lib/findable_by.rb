@@ -49,16 +49,28 @@ module FindableBy
         def findable_by(*attr_names)
           options = attr_names.extract_options!
           options.merge!(:attributes => attr_names.flatten)
-          options[:using] = :equals if not options.key?(:using)
           options[:attributes].each do |attribute|
-            using_what = options[:using]
+            using, through = options[:using], options[:through]
+            if not using.blank? and not through.blank?
+              raise ArgumentError, "You cannot use :using and :through at same time" 
+            end
             
-            if using_what.is_a?(Class)
-              self._finders[attribute] = using_what.new(options)
-            elsif using_what.is_a?(Proc)
-              self._finders[attribute] = ProcFinder.new(options, using_what)
+            options[:using] = :equals if through.blank? and using.blank?
+
+            if not through.blank?
+              self._finders[attribute] = ScopeFinder.new(options, through)
             else
-              self._finders[attribute] = Kernel.const_get("#{options[:using]}_finder".classify).new(options)
+              self._finders[attribute] =
+              case using
+              when Class
+                using.send(:new, options)
+              when Proc
+                ProcFinder.new(options, using)
+              when Symbol
+                Kernel.const_get("#{options[:using]}_finder".classify).new(options)
+              else
+                raise ArgumentError, ":using must be: a Class, a Proc or a Symbol"
+              end
             end
           end
         end
